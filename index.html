@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RGP 🧙‍♂️</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Eagle+Lake&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/style.min.css">
+	<script src="scripts/main.js" defer></script>
+</head>
+<body>
+    <div class="wrapper-hero-form">
+        <h1>Heroes of Might & Magic</h1>
+        <div class="form-container">
+            <form action="#">
+                <input type="text" id="hero-name" name="hero-name" placeholder="Heroe's name">
+                <input type="number" id="hero-strength" name="hero-strength" placeholder="Heroe's strength">
+                <input type="number" id="hero-spell-power" name="hero-spell-power" placeholder="Heroe's spell power">
+                <button class="btn-add" type="submit">Create your Hero</button>
+            </form>
+        </div>
+    </div>
+    <div class="wrapper-hero-box">
+    </div>
+    <div class="wrapper-combat-box">
+        <div class="combat-selectors">
+            <select name="attaquant" id="attaquant">
+                <option value="" selected disabled>- choississez un attaquant</option>
+            </select>
+            <select name="defenseur" id="defenseur">
+                <option value="" selected disabled>- choississez un attaquant</option>
+            </select>
+            <select name="defenseur" id="defenseur">
+                <option value="">Attaque épée</option>
+                <option value="">Attaque magique</option>
+            </select>
+        </div>
+        <button class="btn-attack" type="submit">Attack !</button>
+    </div>
+    
+</body>
+</html>

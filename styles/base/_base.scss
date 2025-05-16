@@ -1,0 +1,20 @@
+@use '../abstracts/variables' as *;
+@use '../abstracts/mixins' as *;
+
+html{
+    // font-size: 62.5%; /* Sets up the base 10 stuff */
+}
+
+body{
+    background: $color-white;
+}
+.container{
+    @include shadow();
+    @include grid;
+}
+
+.btn{
+    display: block;
+    @include btn;
+    font-size: 1rem;
+}
