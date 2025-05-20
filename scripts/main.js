@@ -33,19 +33,20 @@ Créer une classe JavaScript modélisant un personnage de jeu de rôle (RPG) app
 
 Là, c'est à vous de jouer ! :) J'ai imaginé ce petit "jeu" ce week-end et j'ai tout testé dans la console mais j'ai pas encore imaginé comment faire niveau HTML donc ici c'est quartier libre.
 A vous d'imaginer comment tout cela va s'agencer :)
-
 */
 
 const inputName = document.querySelector('#hero-name');
 const inputStrength = document.querySelector("#hero-strength");
 const inputSpellPower = document.querySelector("#hero-spell-power");
-const inputAttacker = document.querySelector("#attaquant");
-const InputDefender = document.querySelector("#defenseur");
-
+const selectAttacker = document.querySelector("#attaquant");
+const selectDefender = document.querySelector("#defenseur");
+const selectWeapon = document.querySelector("#weapon");
+const btnAddHero = document.querySelector(".btn-add");
+const btnAttack = document.querySelector(".btn-attack");
+const btnPotion = document.querySelector(".btn-potion");
 
 const heroBoxContainer = document.querySelector(".wrapper-hero-box");
 const combatBoxContainer = document.querySelector(".wrapper-combat-box");
-const addHeroBtn =  document.querySelector(".btn-add");
 
 class Hero {
     constructor(name, strength, magic) {
@@ -60,29 +61,37 @@ class Hero {
         return `MY NAME IS ${this.name}!!!!`;
     }
     attack(target) {
-        const damage = this.strength;
-        console.log(`${this.name} inflige ${damage} de dégâts à ${target.name}`);
+        const damages = this.strength;
+        console.log(`${this.name} inflige ${damages} de dégâts à ${target.name}`);
     }
-    magicAttack() {}
+    magicAttack(target) {
+        const magicDamages = 20;
+        this.mana -= magicDamages;
+        console.log(`${this.name} inflige ${magicDamages} de dégats magiques à ${target.name}`);
+        console.log(`${this.name} a perdu ${magicDamages} points de mana`);
+        return magicDamages;
+    }
     takeDamages(amount) {
         this.life -= amount;
-        console.log(`${this.name} a perdu ${amount} points de vie`)
+        console.log(`${this.name} a perdu ${amount} points de vie`);
     }
-    isDead() {}
+    isDead() {
+        return `${this.name} is dead`;
+    }
 }
 
 const heroes = [];
 
-function resetForm(){
+function resetForm() {
     inputName.value = "";
     inputStrength.value = "";
     inputSpellPower.value = "";
 }
 
-function displayHeroes(){
+function displayHeroes() {
     heroBoxContainer.innerHTML = "";
 
-    heroes.forEach((hero) =>{
+    heroes.forEach((hero) => {
         const heroBox = document.createElement("div");
         heroBox.classList.add("hero-box");
         heroBox.innerHTML = `<h3>${hero.name}</h3>
@@ -92,24 +101,102 @@ function displayHeroes(){
                                 <p>❤️ Vie : ${hero.life}</p>
                                 <div class="life"><div style="width:${hero.life}%"></div></div>`;
         heroBoxContainer.append(heroBox);
-    })
+    });
 }
 
-addHeroBtn.addEventListener("click", function (e) {
+// ====== ADD HEROES TO A & D ======================
+function selectedHeroes() {
+    selectAttacker.innerHTML = "";
+    selectDefender.innerHTML = "";
+
+    const selectedDefaultA = document.createElement("option");
+    selectedDefaultA.textContent = "- Choisissez un attaquant";
+    selectedDefaultA.selected = true;
+    selectedDefaultA.disabled = true;
+
+    const selectedDefaultD = document.createElement("option");
+    selectedDefaultD.textContent = "- Choisissez un defenseur";
+    selectedDefaultD.selected = true;
+    selectedDefaultD.disabled = true;
+
+    selectAttacker.append(selectedDefaultA);
+    selectDefender.append(selectedDefaultD);
+
+    heroes.forEach((hero, index) => {
+        const selectedA = document.createElement("option");
+        selectedA.value = index;
+        selectedA.textContent = hero.name;
+
+        const selectedD = document.createElement("option");
+        selectedD.value = index;
+        selectedD.textContent = hero.name;
+
+        selectAttacker.append(selectedA);
+        selectDefender.append(selectedD);
+    });
+}
+
+
+// ======== ADD HERO ================
+btnAddHero.addEventListener("click", function (e) {
     e.preventDefault();
 
-        const heroName = inputName.value;
-        const heroStrength = Number(inputStrength.value);
-        const heroSpellPower = Number(inputSpellPower.value);
+    const heroName = inputName.value;
+    const heroStrength = Number(inputStrength.value);
+    const heroSpellPower = Number(inputSpellPower.value);
 
-        if (heroName && heroStrength && heroSpellPower) {
-            const newHero = new Hero(heroName, heroStrength, heroSpellPower);
-            
-            heroes.push(newHero);
-            displayHeroes(newHero);
-        }
-        resetForm();
-        console.log(heroes);
+    if (heroName && heroStrength && heroSpellPower) {
+        const newHero = new Hero(heroName, heroStrength, heroSpellPower);
+
+        heroes.push(newHero);
+        displayHeroes(newHero);
+        selectedHeroes(newHero);
+    }
+    resetForm();
+    console.log(heroes);
 });
 
+//  ======== ATTACK ! =================
+btnAttack.addEventListener("click", function (e) {
+    e.preventDefault();
 
+    // récupère index de A & D
+    const attackerIndex = Number(selectAttacker.value);
+    const defenderIndex = Number(selectDefender.value);
+
+    // intialise attacker & defender
+    const attacker = heroes[attackerIndex];
+    const defender = heroes[defenderIndex];
+
+    const weapon = selectWeapon.value;
+
+    if (attacker && defender && attacker != defender) {
+        if (weapon === "sword") {
+            attacker.attack(defender);
+            defender.takeDamages(attacker.strength);
+            if(defender.life <= 0){
+                console.log(defender.isDead());
+            }
+
+            displayHeroes();
+        } else if (weapon === "magic") {
+            const damages = attacker.magicAttack(defender);
+            defender.takeDamages(damages);
+            attacker.mana -= 20;
+            displayHeroes();
+        }
+    }
+    console.log(attacker.shout());
+    console.log(defender.shout());
+});
+
+// ========== USE PV POTION ==================
+btnPotion.addEventListener("click", function (e) {
+    e.preventDefault();
+
+    const userIndex = Number(selectAttacker.value);
+    const user = heroes[userIndex];
+
+    user.life += 30;
+    displayHeroes();
+})
